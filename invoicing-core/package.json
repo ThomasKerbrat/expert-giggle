@@ -1,0 +1,15 @@
+{
+    "name": "invoicing-core",
+    "version": "0.1.0",
+    "main": "./release/invoicing-core.js",
+    "devDependencies": {
+        "typescript": "^2.1.4",
+        "rollup": "^0.41.1"
+    },
+    "scripts": {
+        "build": "npm run clear && tsc && rollup -c && npm run clear:tmp",
+        "clear": "npm run clear:tmp && npm run clear:release",
+        "clear:tmp": "rm -rf ./.tmp",
+        "clear:release": "rm -rf ./release/*"
+    }
+}

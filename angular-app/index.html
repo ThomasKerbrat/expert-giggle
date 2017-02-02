@@ -1,0 +1,94 @@
+﻿<!doctype html>
+<html>
+    <head>
+        <script src="https://unpkg.com/angular@latest/angular.js"></script>
+        <script src="../invoicing-core/release/invoicing-core.js"></script>
+        <script>
+            angular.module('myApp', [])
+                .provider('clientsRepository', {
+                    $get: function () {
+                        const SetRepository = window['invoicing-core'].SetRepository;
+                        return new SetRepository();
+                    }
+                })
+                .service('ClientService', window['invoicing-core'].ClientService)
+                .controller('myController', class MyController {
+                    constructor(ClientService, clientsRepository) {
+                        this.ClientService = ClientService;
+                        this.clientsRepository = clientsRepository;
+                    }
+
+                    $onInit() {
+                        this.client = {};
+                        this.updateClients();
+                    }
+
+                    updateClients() {
+                        this.clients = this.clientsRepository.values;
+                    }
+
+                    submit() {
+                        this.ClientService.createClient(
+                            this.client.name,
+                            this.client.street,
+                            this.client.line2,
+                            this.client.line3,
+                            this.client.zip,
+                            this.client.city,
+                            this.client.state,
+                            this.client.country,
+                        );
+                        this.client = {};
+                        this.updateClients();
+                    }
+                });
+        </script>
+    </head>
+    <body ng-app="myApp" ng-controller="myController as $ctrl">
+        {{ $ctrl.message }}
+        <form ng-submit="$ctrl.submit()">
+            <fieldset>
+                <legend>Client</legend>
+                <label>Name: <input type="text" ng-model="$ctrl.client.name"></label>
+            </fieldset>
+            <fieldset>
+                <legend>Address</legend>
+                <label>Street: <input type="text" ng-model="$ctrl.client.street"></label>
+                <label>Line 2: <input type="text" ng-model="$ctrl.client.line2"></label>
+                <label>Line 3: <input type="text" ng-model="$ctrl.client.line3"></label>
+                <label>Zip code: <input type="text" ng-model="$ctrl.client.zip"></label>
+                <label>City: <input type="text" ng-model="$ctrl.client.city"></label>
+                <label>State: <input type="text" ng-model="$ctrl.client.state"></label>
+                <label>Country: <input type="text" ng-model="$ctrl.client.country"></label>
+            </fieldset>
+            <button type="submit">Create</button>
+        </form>
+
+        <h3>Clients</h3>
+        <table border="1" ng-if="$ctrl.clients.length">
+            <tr>
+                <th>Name</th>
+                <th>Line 1</th>
+                <th>Line 2</th>
+                <th>Line 3</th>
+                <th>Zip code</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Country</th>
+            </tr>
+            <tr ng-repeat="client in $ctrl.clients">
+                <td>{{ client.name }}</td>
+                <td>{{ client.line1 }}</td>
+                <td>{{ client.line2 }}</td>
+                <td>{{ client.line3 }}</td>
+                <td>{{ client.zip }}</td>
+                <td>{{ client.city }}</td>
+                <td>{{ client.state }}</td>
+                <td>{{ client.country }}</td>
+            </tr>
+        </table>
+        <p ng-if="!$ctrl.clients.length">
+            <i>No clients.</i>
+        </p>
+    </body>
+</html>
