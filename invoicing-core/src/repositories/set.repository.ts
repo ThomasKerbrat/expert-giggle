@@ -1,4 +1,4 @@
-import { IRepository } from '../core/services/index';
+import { IRepository } from '../services/index';
 
 export class SetRepository<T> implements IRepository<T> {
     private entities: Set<T>;
